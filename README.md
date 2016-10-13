@@ -2,20 +2,20 @@
 
 Displays a rotating projection of a spherical image.
 
-Try the <a href="http://www.woollymittens.nl/default.php?url=useful-spherical">demo</a>.
+Try the <a href="http://www.woollymittens.nl/default.php?url=useful-photosphere">demo</a>.
 
 ## How to include the script
 
 The stylesheet is best included in the header of the document.
 
 ```html
-<link rel="stylesheet" href="./css/useful-photoshere.css"/>
+<link rel="stylesheet" href="./css/useful-photosphere.css"/>
 ```
 
 This include can be added to the header or placed inline before the script is invoked.
 
 ```html
-<script src="./js/useful-photoshere.js"></script>
+<script src="./js/useful-photosphere.js"></script>
 ```
 
 ## How to start the script
