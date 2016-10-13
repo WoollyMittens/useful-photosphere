@@ -18,6 +18,10 @@ This include can be added to the header or placed inline before the script is in
 <script src="./js/useful-photoshere.js"></script>
 ```
 
+## Dependencies
+
+This script relies on the ThreeJS library from https://threejs.org/
+
 ## How to start the script
 
 ```javascript
