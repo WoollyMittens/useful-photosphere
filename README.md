@@ -18,10 +18,6 @@ This include can be added to the header or placed inline before the script is in
 <script src="./js/useful-photoshere.js"></script>
 ```
 
-## Dependencies
-
-This script relies on the ThreeJS library from https://threejs.org/
-
 ## How to start the script
 
 ```javascript
@@ -36,6 +32,8 @@ var photoSphere = new useful.PhotoSphere().init({
 **idle : {float}** - The steps in radians to rotate when idle.
 
 ## How to build the script
+
+This project uses three.js from https://threejs.org/
 
 This project uses node.js from http://nodejs.org/
 
