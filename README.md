@@ -26,11 +26,14 @@ This script relies on the ThreeJS library from https://threejs.org/
 
 ```javascript
 var photoSphere = new useful.PhotoSphere().init({
-	'figure' : document.querySelector('.useful-photosphere')
+	'figure' : document.querySelector('.useful-photosphere'),
+	'idle': 0.002
 });
 ```
 
 **figure : {DOM node}** - A DOM node to be processed into a spherical display.
+
+**idle : {float}** - The steps in radians to rotate when idle.
 
 ## How to build the script
 
