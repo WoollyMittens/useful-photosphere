@@ -1,0 +1,26 @@
+.useful-photosphere {
+  display: block;
+  margin: 0;
+  overflow: hidden;
+  position: relative;
+  padding-bottom: 100%;
+  width: 100%;
+  box-sizing: border-box; }
+  .useful-photosphere *, .useful-photosphere *:after, .useful-photosphere *:before {
+    box-sizing: border-box; }
+  .useful-photosphere canvas {
+    position: absolute; }
+  .useful-photosphere:after {
+    content: '';
+    display: block;
+    width: 4rem;
+    height: 4rem;
+    background-image: url("../img/alert.svg");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    right: 1rem;
+    bottom: 1rem;
+    position: absolute; }
+  .useful-photosphere:focus:after, .useful-photosphere:hover:after {
+    visibility: hidden; }
