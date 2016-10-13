@@ -19,8 +19,8 @@ useful.PhotoSphere.prototype.Controls = function(context) {
 
     this.context = context;
     this.model = context.model;
-    this.pan = {};
-    this.zoom = {};
+    this.pan = null;
+    this.zoom = null;
 
     // methods
 
@@ -37,11 +37,21 @@ useful.PhotoSphere.prototype.Controls = function(context) {
         document.body.addEventListener('touchend', this.onTouch.bind(this, 'end'));
     };
 
+    this.activate = function () {
+        // flag the component active
+        this.model.figure.className += ' --active';
+        // remove the idle animation
+        this.model.idle = 0;
+        // destroy this function
+        this.active = function () {};
+    };
+
     // events
 
     this.onTouch = function(phase, event) {
         // cancel the interaction
         event.preventDefault();
+        this.activate();
         // if there's more than one touch
         if (event.touches.length > 1) {
             // treat this as a pinch
@@ -61,6 +71,7 @@ useful.PhotoSphere.prototype.Controls = function(context) {
             fov = camera.fov / 360 * 2 * Math.PI;
         // cancel the drag
         event.preventDefault();
+        this.activate();
         // for every phase of the drag
         switch (phase) {
             case 'start':
@@ -79,7 +90,6 @@ useful.PhotoSphere.prototype.Controls = function(context) {
                     dx = x - this.pan.x;
                     dy = y - this.pan.y;
                     // calculate the rotation
-                    camera.rotation.order = 'YXZ';
                     camera.rotation.y += dx / w * fov;
                     camera.rotation.x += dy / h * fov;
                     // reset the position
@@ -97,6 +107,7 @@ useful.PhotoSphere.prototype.Controls = function(context) {
         var camera = this.model.camera;
         // cancel the scroll
         event.preventDefault();
+        this.activate();
         // get the feedback
         if (event.wheelDeltaY) {
             camera.fov -= event.wheelDeltaY * 0.05;

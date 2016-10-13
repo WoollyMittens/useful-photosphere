@@ -44285,8 +44285,8 @@ useful.PhotoSphere.prototype.Controls = function(context) {
 
     this.context = context;
     this.model = context.model;
-    this.pan = {};
-    this.zoom = {};
+    this.pan = null;
+    this.zoom = null;
 
     // methods
 
@@ -44303,11 +44303,21 @@ useful.PhotoSphere.prototype.Controls = function(context) {
         document.body.addEventListener('touchend', this.onTouch.bind(this, 'end'));
     };
 
+    this.activate = function () {
+        // flag the component active
+        this.model.figure.className += ' --active';
+        // remove the idle animation
+        this.model.idle = 0;
+        // destroy this function
+        this.active = function () {};
+    };
+
     // events
 
     this.onTouch = function(phase, event) {
         // cancel the interaction
         event.preventDefault();
+        this.activate();
         // if there's more than one touch
         if (event.touches.length > 1) {
             // treat this as a pinch
@@ -44327,6 +44337,7 @@ useful.PhotoSphere.prototype.Controls = function(context) {
             fov = camera.fov / 360 * 2 * Math.PI;
         // cancel the drag
         event.preventDefault();
+        this.activate();
         // for every phase of the drag
         switch (phase) {
             case 'start':
@@ -44345,7 +44356,6 @@ useful.PhotoSphere.prototype.Controls = function(context) {
                     dx = x - this.pan.x;
                     dy = y - this.pan.y;
                     // calculate the rotation
-                    camera.rotation.order = 'YXZ';
                     camera.rotation.y += dx / w * fov;
                     camera.rotation.x += dy / h * fov;
                     // reset the position
@@ -44363,6 +44373,7 @@ useful.PhotoSphere.prototype.Controls = function(context) {
         var camera = this.model.camera;
         // cancel the scroll
         event.preventDefault();
+        this.activate();
         // get the feedback
         if (event.wheelDeltaY) {
             camera.fov -= event.wheelDeltaY * 0.05;
@@ -44436,6 +44447,79 @@ var useful = useful || {};
 useful.PhotoSphere = useful.PhotoSphere || function() {};
 
 // extend the constructor
+useful.PhotoSphere.prototype.Loader = function(context) {
+
+    "use strict";
+
+    // properties
+
+    this.context = context;
+    this.model = context.model;
+
+    // methods
+
+    this.load = function(url, promise) {
+        // display the progress bar
+        this.bar = document.createElement('span');
+        this.bar.className = '--progress';
+        this.chart = document.createElement('span');
+        this.chart.innerHTML = '0%';
+        this.bar.appendChild(this.chart);
+        this.model.figure.appendChild(this.bar);
+        // set up a promise to load the photo
+        var loader = new THREE.TextureLoader();
+        loader.load(
+            url,
+            this.onSuccess.bind(this, promise),
+            this.onUpdate.bind(this),
+            this.onError.bind(this)
+        );
+    };
+
+    // events
+
+    this.onUpdate = function(xhr) {
+        // calculate the progress
+        var pct = (xhr.loaded / xhr.total * 100) + '%';
+        // update the progress bar
+        this.chart.innerHTML = pct;
+        this.chart.style.width = pct;
+    };
+
+    this.onError = function(xhr) {
+        // display a message in the progress bar
+        this.model.figure.className += ' --error';
+        this.chart.innerHTML = 'Error';
+        this.chart.style.width = '100%';
+    };
+
+    this.onSuccess = function(promise, photo) {
+        // hide the progress bar
+        this.model.figure.removeChild(this.bar, true);
+        // complete the promise
+        promise(photo);
+    };
+
+};
+
+// return as a require.js module
+if (typeof module !== 'undefined') {
+    exports = module.exports = useful.PhotoSphere.Loader;
+}
+
+/*
+	Source:
+	van Creij, Maurice (2016). "useful.photosphere.js: Projected Photoshere Image", version 20161013, http://www.woollymittens.nl/.
+
+	License:
+	This work is licensed under a Creative Commons Attribution 3.0 Unported License.
+*/
+
+// create the constructor if needed
+var useful = useful || {};
+useful.PhotoSphere = useful.PhotoSphere || function() {};
+
+// extend the constructor
 useful.PhotoSphere.prototype.Stage = function(context) {
 
     "use strict";
@@ -44470,6 +44554,7 @@ useful.PhotoSphere.prototype.Stage = function(context) {
         // create the camera
         this.model.camera = new THREE.PerspectiveCamera(75, width / height, 1, 1000);
         this.model.camera.position.x = 0.1;
+        this.model.camera.rotation.order = 'YXZ';
         // create the renderer
         this.model.renderer = this.hasWebGL() ? new THREE.WebGLRenderer() : new THREE.CanvasRenderer();
         this.model.renderer.setSize(width, height);
@@ -44491,6 +44576,8 @@ useful.PhotoSphere.prototype.Stage = function(context) {
     // events
 
     this.render = function() {
+        // if idle import a slight rotation
+        this.model.camera.rotation.y += this.model.idle;
         // render the scene
         this.model.renderer.render(
             this.model.scene,
@@ -44530,34 +44617,30 @@ useful.PhotoSphere.prototype.init = function(model) {
 
     // model
 
-    this.model = model;
+    this.model = {
+        'idle': -0.002
+    };
+
+    for (name in model) {
+        this.model[name] = model[name];
+    }
 
     // views
 
     this.stage = new this.Stage(this);
     this.controls = new this.Controls(this);
+    this.loader = new this.Loader(this);
 
     // controller
 
-    this.loadPhoto = function(url) {
-        // set up a promise to load the photo
-        var loader = new THREE.TextureLoader();
-        loader.load(
-            url,
-            this.onLoadPhoto.bind(this),
-            function(xhr) { console.log((xhr.loaded / xhr.total * 100) + '% loaded'); },
-            function(xhr) { console.log('An error happened'); }
-        );
-    };
-
-    this.onLoadPhoto = function(photo) {
-        // create the required elements
+    this.onComplete = function(photo) {
         this.stage.create(photo);
         this.controls.implement();
     };
 
-    this.loadPhoto(
-        this.model.figure.getAttribute('data-src')
+    this.loader.load(
+        this.model.figure.getAttribute('data-src'),
+        this.onComplete.bind(this)
     );
 
     return this;

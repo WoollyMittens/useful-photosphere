@@ -45,6 +45,7 @@ useful.PhotoSphere.prototype.Stage = function(context) {
         // create the camera
         this.model.camera = new THREE.PerspectiveCamera(75, width / height, 1, 1000);
         this.model.camera.position.x = 0.1;
+        this.model.camera.rotation.order = 'YXZ';
         // create the renderer
         this.model.renderer = this.hasWebGL() ? new THREE.WebGLRenderer() : new THREE.CanvasRenderer();
         this.model.renderer.setSize(width, height);
@@ -66,6 +67,8 @@ useful.PhotoSphere.prototype.Stage = function(context) {
     // events
 
     this.render = function() {
+        // if idle import a slight rotation
+        this.model.camera.rotation.y += this.model.idle;
         // render the scene
         this.model.renderer.render(
             this.model.scene,

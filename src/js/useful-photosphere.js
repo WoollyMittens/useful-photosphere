@@ -17,34 +17,30 @@ useful.PhotoSphere.prototype.init = function(model) {
 
     // model
 
-    this.model = model;
+    this.model = {
+        'idle': -0.002
+    };
+
+    for (name in model) {
+        this.model[name] = model[name];
+    }
 
     // views
 
     this.stage = new this.Stage(this);
     this.controls = new this.Controls(this);
+    this.loader = new this.Loader(this);
 
     // controller
 
-    this.loadPhoto = function(url) {
-        // set up a promise to load the photo
-        var loader = new THREE.TextureLoader();
-        loader.load(
-            url,
-            this.onLoadPhoto.bind(this),
-            function(xhr) { console.log((xhr.loaded / xhr.total * 100) + '% loaded'); },
-            function(xhr) { console.log('An error happened'); }
-        );
-    };
-
-    this.onLoadPhoto = function(photo) {
-        // create the required elements
+    this.onComplete = function(photo) {
         this.stage.create(photo);
         this.controls.implement();
     };
 
-    this.loadPhoto(
-        this.model.figure.getAttribute('data-src')
+    this.loader.load(
+        this.model.figure.getAttribute('data-src'),
+        this.onComplete.bind(this)
     );
 
     return this;
