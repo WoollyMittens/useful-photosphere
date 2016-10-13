@@ -44480,7 +44480,7 @@ useful.PhotoSphere.prototype.Loader = function(context) {
 
     this.onUpdate = function(xhr) {
         // calculate the progress
-        var pct = (xhr.loaded / xhr.total * 100) + '%';
+        var pct = Math.round(xhr.loaded / xhr.total * 100) + '%';
         // update the progress bar
         this.chart.innerHTML = pct;
         this.chart.style.width = pct;
