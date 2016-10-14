@@ -30,7 +30,7 @@
 	&:hover:after {
 		visibility: hidden;
 	}
-	.--progress {
+	.progress {
 		position: absolute;
 		width: 50%;
 		left: 50%;
@@ -50,15 +50,15 @@
 			text-align: center;
 		}
 	}
-	&.--error {
-		.--progress {
+	&.error {
+		.progress {
 			border-color: #cc0000;
 			> span {
 				background-color: #cc0000;
 			}
 		}
 	}
-	&.--active {
+	&.active {
 		&:after {
 			display: none;
 		}

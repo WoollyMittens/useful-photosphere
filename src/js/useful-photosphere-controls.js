@@ -39,7 +39,7 @@ useful.PhotoSphere.prototype.Controls = function(context) {
 
     this.activate = function () {
         // flag the component active
-        this.model.figure.className += ' --active';
+        this.model.figure.className += ' active';
         // remove the idle animation
         this.model.idle = 0;
         // destroy this function

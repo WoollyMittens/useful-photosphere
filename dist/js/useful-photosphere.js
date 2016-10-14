@@ -44305,7 +44305,7 @@ useful.PhotoSphere.prototype.Controls = function(context) {
 
     this.activate = function () {
         // flag the component active
-        this.model.figure.className += ' --active';
+        this.model.figure.className += ' active';
         // remove the idle animation
         this.model.idle = 0;
         // destroy this function
@@ -44461,7 +44461,7 @@ useful.PhotoSphere.prototype.Loader = function(context) {
     this.load = function(url, promise) {
         // display the progress bar
         this.bar = document.createElement('span');
-        this.bar.className = '--progress';
+        this.bar.className = 'progress';
         this.chart = document.createElement('span');
         this.chart.innerHTML = '0%';
         this.bar.appendChild(this.chart);
@@ -44488,7 +44488,7 @@ useful.PhotoSphere.prototype.Loader = function(context) {
 
     this.onError = function(xhr) {
         // display a message in the progress bar
-        this.model.figure.className += ' --error';
+        this.model.figure.className += ' error';
         this.chart.innerHTML = 'Error';
         this.chart.style.width = '100%';
     };

@@ -25,7 +25,7 @@
     position: absolute; }
   .useful-photosphere:focus:after, .useful-photosphere:hover:after {
     visibility: hidden; }
-  .useful-photosphere .--progress {
+  .useful-photosphere .progress {
     position: absolute;
     width: 50%;
     left: 50%;
@@ -35,7 +35,7 @@
     z-index: 10;
     border: solid 2px #000;
     padding: 2px; }
-    .useful-photosphere .--progress > span {
+    .useful-photosphere .progress > span {
       background-color: #000;
       color: #fff;
       display: block;
@@ -44,9 +44,9 @@
       height: 1.5rem;
       line-height: 1.5rem;
       text-align: center; }
-  .useful-photosphere.--error .--progress {
+  .useful-photosphere.error .progress {
     border-color: #cc0000; }
-    .useful-photosphere.--error .--progress > span {
+    .useful-photosphere.error .progress > span {
       background-color: #cc0000; }
-  .useful-photosphere.--active:after {
+  .useful-photosphere.active:after {
     display: none; }
