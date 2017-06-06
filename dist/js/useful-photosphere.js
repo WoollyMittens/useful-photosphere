@@ -44266,7 +44266,7 @@ var useful = useful || {};
 
 /*
 	Source:
-	van Creij, Maurice (2016). "useful.photosphere.js: Projected Photoshere Image", version 20161013, http://www.woollymittens.nl/.
+	van Creij, Maurice (2014). "useful.photozoom.js: Overlays a full screen preview of a thumbnail", version 20141127, http://www.woollymittens.nl/.
 
 	License:
 	This work is licensed under a Creative Commons Attribution 3.0 Unported License.
@@ -44274,164 +44274,44 @@ var useful = useful || {};
 
 // create the constructor if needed
 var useful = useful || {};
-useful.PhotoSphere = useful.PhotoSphere || function() {};
+useful.Photosphere = useful.Photosphere || function () {};
 
 // extend the constructor
-useful.PhotoSphere.prototype.Controls = function(context) {
+useful.Photosphere.prototype.Busy = function (container) {
 
-    "use strict";
+	// PROPERTIES
 
-    // properties
+	"use strict";
+	this.container = container;
 
-    this.context = context;
-    this.model = context.model;
-    this.pan = null;
-    this.zoom = null;
+	// METHODS
 
-    // methods
+	this.init = function () {
+		// not needed yet
+	};
 
-    this.implement = function() {
-        // mouse
-        this.model.figure.addEventListener('mousewheel', this.onWheel.bind(this), false);
-        this.model.figure.addEventListener('DOMMouseScroll', this.onWheel.bind(this), false);
-        this.model.figure.addEventListener('mousedown', this.onDrag.bind(this, 'start'));
-        this.model.figure.addEventListener('mousemove', this.onDrag.bind(this, 'move'));
-        document.body.addEventListener('mouseup', this.onDrag.bind(this, 'end'));
-        // touch
-        this.model.figure.addEventListener('touchstart', this.onTouch.bind(this, 'start'));
-        this.model.figure.addEventListener('touchmove', this.onTouch.bind(this, 'move'));
-        document.body.addEventListener('touchend', this.onTouch.bind(this, 'end'));
-    };
+	this.show = function () {
+		// construct the spinner
+		this.spinner = document.createElement('div');
+		this.spinner.className = (this.container === document.body) ?
+			'photosphere-busy photosphere-busy-fixed photosphere-busy-active':
+			'photosphere-busy photosphere-busy-active';
+		this.container.appendChild(this.spinner);
+	};
 
-    this.activate = function () {
-        // flag the component active
-        this.model.figure.className += ' active';
-        // remove the idle animation
-        this.model.idle = 0;
-        // destroy this function
-        this.active = function () {};
-    };
-
-    // events
-
-    this.onTouch = function(phase, event) {
-        // cancel the interaction
-        event.preventDefault();
-        this.activate();
-        // if there's more than one touch
-        if (event.touches.length > 1) {
-            // treat this as a pinch
-            this.onPinch(phase, event);
-        // else
-        } else {
-            // treat this as a drag
-            this.onDrag(phase, event);
-        }
-    };
-
-    this.onDrag = function(phase, event) {
-        var x, y, dx, dy,
-            camera = this.model.camera,
-            w = this.model.figure.offsetWidth,
-            h = this.model.figure.offsetHeight,
-            fov = camera.fov / 360 * 2 * Math.PI;
-        // cancel the drag
-        event.preventDefault();
-        this.activate();
-        // for every phase of the drag
-        switch (phase) {
-            case 'start':
-                // store the start position
-                this.pan = {
-                    'x': event.clientX || event.touches[0].pageX,
-                    'y': event.clientY || event.touches[0].pageY
-                };
-                break;
-            case 'move':
-                // if mouse is down
-                if (this.pan !== null) {
-                    // update the position
-                    x = event.clientX || event.touches[0].pageX;
-                    y = event.clientY || event.touches[0].pageY;
-                    dx = x - this.pan.x;
-                    dy = y - this.pan.y;
-                    // calculate the rotation
-                    camera.rotation.y += dx / w * fov;
-                    camera.rotation.x += dy / h * fov;
-                    // reset the position
-                    this.pan.x = x;
-                    this.pan.y = y;
-                }
-                break;
-            case 'end':
-                // clear the position
-                this.pan = null;
-        };
-    };
-
-    this.onWheel = function(event) {
-        var camera = this.model.camera;
-        // cancel the scroll
-        event.preventDefault();
-        this.activate();
-        // get the feedback
-        if (event.wheelDeltaY) {
-            camera.fov -= event.wheelDeltaY * 0.05;
-        } else if (event.wheelDelta) {
-            camera.fov -= event.wheelDelta * 0.05;
-        } else if (event.detail) {
-            camera.fov += event.detail * 1.0;
-        }
-        // update the zoom
-        camera.fov = Math.max(40, Math.min(100, camera.fov));
-        camera.updateProjectionMatrix();
-    };
-
-    this.onPinch = function(phase, event) {
-        var x, y, dx, dy,
-            camera = this.model.camera,
-            w = this.model.figure.offsetWidth,
-            h = this.model.figure.offsetHeight;
-        // cancel the drag
-        event.preventDefault();
-        // for every phase of the drag
-        switch (phase) {
-            case 'start':
-                // store the start position
-                this.zoom = {
-                    'x': Math.abs(event.touches[1].pageX - event.touches[0].pageX),
-                    'y': Math.abs(event.touches[1].pageY - event.touches[0].pageY)
-                };
-                break;
-            case 'move':
-                // if mouse is down
-                if (this.zoom !== null) {
-                    // update the position
-                    x = Math.abs(event.touches[1].pageX - event.touches[0].pageX);
-                    y = Math.abs(event.touches[1].pageY - event.touches[0].pageY);
-                    dx = x - this.zoom.x;
-                    dy = y - this.zoom.y;
-                    // calculate the rotation
-                    camera.fov *= 1 - (dx / w + dy / h) / 2;
-                    // reset the position
-                    this.zoom.x = x;
-                    this.zoom.y = y;
-                }
-                // update the zoom
-                camera.fov = Math.max(40, Math.min(100, camera.fov));
-                camera.updateProjectionMatrix();
-                break;
-            case 'end':
-                // clear the position
-                this.zoom = null;
-        };
-    };
+	this.hide = function () {
+		// deconstruct the spinner
+		if (this.spinner) {
+			this.container.removeChild(this.spinner);
+			this.spinner = null;
+		}
+	};
 
 };
 
 // return as a require.js module
 if (typeof module !== 'undefined') {
-    exports = module.exports = useful.PhotoSphere.Controls;
+	exports = module.exports = useful.Photosphere.Busy;
 }
 
 /*
@@ -44444,67 +44324,248 @@ if (typeof module !== 'undefined') {
 
 // create the constructor if needed
 var useful = useful || {};
-useful.PhotoSphere = useful.PhotoSphere || function() {};
+useful.Photosphere = useful.Photosphere || function() {};
 
 // extend the constructor
-useful.PhotoSphere.prototype.Loader = function(context) {
+useful.Photosphere.prototype.Controls = function(parent) {
+
+  "use strict";
+
+  // PROPERTIES
+
+  this.parent = parent;
+  this.config = parent.config;
+  this.pan = null;
+  this.zoom = null;
+
+  // METHODS
+
+  this.implement = function() {
+    // mouse
+    this.config.figure.addEventListener('mousewheel', this.onWheel.bind(this), false);
+    this.config.figure.addEventListener('DOMMouseScroll', this.onWheel.bind(this), false);
+    this.config.figure.addEventListener('mousedown', this.onDrag.bind(this, 'start'));
+    this.config.figure.addEventListener('mousemove', this.onDrag.bind(this, 'move'));
+    this.config.figure.addEventListener('mouseup', this.onDrag.bind(this, 'end'));
+    //document.body.addEventListener('mouseup', this.onDrag.bind(this, 'end'));
+    // touch
+    this.config.figure.addEventListener('touchstart', this.onTouch.bind(this, 'start'));
+    this.config.figure.addEventListener('touchmove', this.onTouch.bind(this, 'move'));
+    this.config.figure.addEventListener('touchend', this.onTouch.bind(this, 'end'));
+    //document.body.addEventListener('touchend', this.onTouch.bind(this, 'end'));
+  };
+
+  this.activate = function() {
+    if (this.config.idle !== 0 && this.config.figure) {
+      // flag the component active
+      this.config.figure.className += ' active';
+      // remove the idle animation
+      this.config.idle = 0;
+    }
+  };
+
+  this.deactivate = function() {
+    if (this.config.idle === 0 && this.config.figure) {
+      // flag the component passive
+      this.config.figure.className = this.config.figure.className.replace(/ active/g, '');
+      // restore the idle animation
+      this.config.idle = 0.002;
+    }
+  };
+
+  // EVENTS
+
+  this.onIdle = function() {
+    clearTimeout(this.config.idleTimeout);
+    this.config.idleTimeout = setTimeout(this.deactivate.bind(this), 500);
+  };
+
+  this.onTouch = function(phase, event) {
+    // cancel the interaction
+    event.preventDefault();
+    this.activate();
+    // if there's more than one touch
+    if (event.touches.length > 1) {
+      // treat this as a pinch
+      this.onPinch(phase, event);
+      // else
+    } else {
+      // treat this as a drag
+      this.onDrag(phase, event);
+    }
+  };
+
+  this.onDrag = function(phase, event) {
+    var x, y, dx, dy,
+      camera = this.config.camera,
+      w = this.config.figure.offsetWidth,
+      h = this.config.figure.offsetHeight,
+      fov = camera.fov / 360 * 2 * Math.PI;
+    // cancel the drag
+    event.preventDefault();
+    this.activate();
+    // for every phase of the drag
+    switch (phase) {
+      case 'start':
+        // store the start position
+        this.pan = {
+          'x': event.clientX || event.touches[0].pageX,
+          'y': event.clientY || event.touches[0].pageY
+        };
+        break;
+      case 'move':
+        // reset the idle timer
+        this.onIdle();
+        // if mouse is down
+        if (this.pan !== null) {
+          // update the position
+          x = event.clientX || event.touches[0].pageX;
+          y = event.clientY || event.touches[0].pageY;
+          dx = x - this.pan.x;
+          dy = y - this.pan.y;
+          // calculate the rotation
+          camera.rotation.y += dx / w * fov;
+          camera.rotation.x += dy / h * fov;
+          // reset the position
+          this.pan.x = x;
+          this.pan.y = y;
+        }
+        break;
+      case 'end':
+        // clear the position
+        this.pan = null;
+    };
+  };
+
+  this.onWheel = function(event) {
+    var camera = this.config.camera;
+    // cancel the scroll
+    event.preventDefault();
+    this.activate();
+    // get the feedback
+    if (event.wheelDeltaY) {
+      camera.fov -= event.wheelDeltaY * 0.05;
+    } else if (event.wheelDelta) {
+      camera.fov -= event.wheelDelta * 0.05;
+    } else if (event.detail) {
+      camera.fov += event.detail * 1.0;
+    }
+    // update the zoom
+    camera.fov = Math.max(40, Math.min(100, camera.fov));
+    camera.updateProjectionMatrix();
+  };
+
+  this.onPinch = function(phase, event) {
+    var x, y, dx, dy,
+      camera = this.config.camera,
+      w = this.config.figure.offsetWidth,
+      h = this.config.figure.offsetHeight;
+    // cancel the drag
+    event.preventDefault();
+    // for every phase of the drag
+    switch (phase) {
+      case 'start':
+        // store the start position
+        this.zoom = {
+          'x': Math.abs(event.touches[1].pageX - event.touches[0].pageX),
+          'y': Math.abs(event.touches[1].pageY - event.touches[0].pageY)
+        };
+        break;
+      case 'move':
+        // if mouse is down
+        if (this.zoom !== null) {
+          // update the position
+          x = Math.abs(event.touches[1].pageX - event.touches[0].pageX);
+          y = Math.abs(event.touches[1].pageY - event.touches[0].pageY);
+          dx = x - this.zoom.x;
+          dy = y - this.zoom.y;
+          // calculate the rotation
+          camera.fov *= 1 - (dx / w + dy / h) / 2;
+          // reset the position
+          this.zoom.x = x;
+          this.zoom.y = y;
+        }
+        // update the zoom
+        camera.fov = Math.max(40, Math.min(100, camera.fov));
+        camera.updateProjectionMatrix();
+        break;
+      case 'end':
+        // clear the position
+        this.zoom = null;
+    };
+  };
+
+};
+
+// return as a require.js module
+if (typeof module !== 'undefined') {
+  exports = module.exports = useful.Photosphere.Controls;
+}
+
+/*
+	Source:
+	van Creij, Maurice (2016). "useful.Photosphere.js: Projected Photoshere Image", version 20161013, http://www.woollymittens.nl/.
+
+	License:
+	This work is licensed under a Creative Commons Attribution 3.0 Unported License.
+*/
+
+// create the constructor if needed
+var useful = useful || {};
+useful.Photosphere = useful.Photosphere || function() {};
+
+// extend the constructor
+useful.Photosphere.prototype.Loader = function(parent) {
 
     "use strict";
 
-    // properties
+    // PROPERTIES
 
-    this.context = context;
-    this.model = context.model;
+    this.parent = parent;
+    this.config = parent.config;
 
-    // methods
+    // METHODS
 
-    this.load = function(url, promise) {
-        // display the progress bar
-        this.bar = document.createElement('span');
-        this.bar.className = 'progress';
-        this.chart = document.createElement('span');
-        this.chart.innerHTML = '0%';
-        this.bar.appendChild(this.chart);
-        this.model.figure.appendChild(this.bar);
+    this.load = function(url, promises) {
+        // store the promises
+        this.promises = promises;
         // set up a promise to load the photo
         var loader = new THREE.TextureLoader();
         loader.load(
             url,
-            this.onSuccess.bind(this, promise),
+            this.onSuccess.bind(this),
             this.onUpdate.bind(this),
             this.onError.bind(this)
         );
     };
 
-    // events
+    // EVENTS
 
     this.onUpdate = function(xhr) {
         // calculate the progress
         var pct = Math.round(xhr.loaded / xhr.total * 100) + '%';
-        // update the progress bar
-        this.chart.innerHTML = pct;
-        this.chart.style.width = pct;
+        // report it
+        if (this.promises.update) { this.promises.update(pct); }
     };
 
     this.onError = function(xhr) {
-        // display a message in the progress bar
-        this.model.figure.className += ' error';
-        this.chart.innerHTML = 'Error';
-        this.chart.style.width = '100%';
+        // determine what went wrong
+        var error = xhr.target.status + ': ' + xhr.target.statusText;
+        console.log('Photosphere loader:', error);
+        // resolve the error promise
+        if (this.promises.error) { this.promises.error(error); }
     };
 
-    this.onSuccess = function(promise, photo) {
-        // hide the progress bar
-        this.model.figure.removeChild(this.bar, true);
+    this.onSuccess = function(photo) {
         // complete the promise
-        promise(photo);
+        if (this.promises.complete) { this.promises.complete(photo); }
     };
 
 };
 
 // return as a require.js module
 if (typeof module !== 'undefined') {
-    exports = module.exports = useful.PhotoSphere.Loader;
+    exports = module.exports = useful.Photosphere.Loader;
 }
 
 /*
@@ -44517,19 +44578,244 @@ if (typeof module !== 'undefined') {
 
 // create the constructor if needed
 var useful = useful || {};
-useful.PhotoSphere = useful.PhotoSphere || function() {};
+useful.Photosphere = useful.Photosphere || function() {};
 
 // extend the constructor
-useful.PhotoSphere.prototype.Stage = function(context) {
+useful.Photosphere.prototype.Main = function(config, context) {
+
+  "use strict";
+
+  // PROPERTIES
+
+  this.context = context;
+  this.element = config.element;
+  this.config = {
+    'idle': 0.002,
+    'container': document.body,
+    'slicer': '{src}'
+  };
+
+  for (name in config) {
+    this.config[name] = config[name];
+  }
+
+  // METHODS
+
+  this.init = function() {
+    // set the event handler on the target element
+    this.element.addEventListener('click', this.onElementClicked.bind(this));
+  };
+
+  this.viewer = function() {
+    // create the components
+    this.stage = new this.context.Stage(this);
+    this.controls = new this.context.Controls(this);
+    this.loader = new this.context.Loader(this);
+    // create the url for the image sizing webservice
+    var size = 'height=1080';
+    var src = this.element.getAttribute('href') || this.element.getAttribute('data-src') || this.element.getAttribute('src');
+    var url = this.config.slicer.replace('{src}', src).replace('{size}', size);
+    // load the viewer
+    this.loader.load(url, {
+      'complete': this.onViewerComplete.bind(this),
+      'update': this.onViewerLoading.bind(this),
+      'error': this.onViewerError.bind(this)
+    });
+  };
+
+  // EVENTS
+
+  this.onElementClicked = function(evt) {
+    // prevent the click
+    evt.preventDefault();
+    // show the busy indicator
+    this.busy = new this.context.Busy(this.config.container);
+    this.busy.show();
+    // load the viewer
+    this.viewer();
+    // resolve the opened promise
+    if (this.config.opened) { this.config.opened(this.config.element); }
+  };
+
+  this.onViewerComplete = function(photo) {
+    // hide busy indicator
+    this.busy.hide();
+    // show the popup
+    this.popup = new this.context.Popup(this);
+    this.popup.show();
+    // create the stage
+    this.stage.create(photo);
+    // implement the controls
+    this.controls.implement();
+  };
+
+  this.onViewerLoading = function(progress) {
+    // TODO: make busy component show update %
+  };
+
+  this.onViewerError = function(message) {
+    // hide busy indicator
+    this.busy.hide();
+    // jump directly to the the locator promise if available
+    if (this.config.located) { this.config.located(this.config.element); }
+  };
+
+};
+
+// return as a require.js module
+if (typeof module !== 'undefined') {
+  exports = module.exports.Main = useful.Photosphere.Main;
+}
+
+/*
+	Source:
+	van Creij, Maurice (2016). "useful.photosphere.js: Projected Photoshere Image", version 20161013, http://www.woollymittens.nl/.
+
+	License:
+	This work is licensed under a Creative Commons Attribution 3.0 Unported License.
+*/
+
+// create the constructor if needed
+var useful = useful || {};
+useful.Photosphere = useful.Photosphere || function() {};
+
+// extend the constructor
+useful.Photosphere.prototype.Popup = function(parent) {
+
+  "use strict";
+
+  // PROPERTIES
+
+  this.parent = parent;
+  this.config = parent.config;
+
+  // METHODS
+
+  this.show = function() {
+    // if the popup doesn't exist
+    if (!this.config.figure) {
+      // create a container for the popup
+      this.config.figure = document.createElement('figure');
+      this.config.figure.className = (this.config.container === document.body) ?
+        'photosphere-popup photosphere-popup-fixed photosphere-popup-passive' :
+        'photosphere-popup photosphere-popup-passive';
+      // add a close gadget
+      this.addCloser();
+      // add a locator gadget
+      this.addLocator();
+      // add the popup to the document
+      this.config.container.appendChild(this.config.figure);
+      // reveal the popup when ready
+      setTimeout(this.onShow.bind(this), 0);
+    }
+  };
+
+  this.hide = function() {
+    // if there is a popup
+    if (this.config.figure) {
+      // unreveal the popup
+      this.config.figure.className = this.config.figure.className.replace(/-active/gi, '-passive');
+      // and after a while
+      var _this = this;
+      setTimeout(function() {
+        // remove it
+        _this.config.container.removeChild(_this.config.figure);
+        // remove its reference
+        _this.config.figure = null;
+      }, 500);
+    }
+  };
+
+  this.addCloser = function() {
+    // build a close gadget
+    var closer = document.createElement('a');
+    closer.className = 'photosphere-closer';
+    closer.innerHTML = 'x';
+    closer.href = '#close';
+    // add the close event handler
+    closer.addEventListener('click', this.onHide.bind(this));
+    closer.addEventListener('touchstart', this.onHide.bind(this));
+    // add the close gadget to the image
+    this.config.figure.appendChild(closer);
+  };
+
+  this.addLocator = function(url) {
+    // only add if a handler was specified
+    if (this.config.located) {
+      // build the geo marker icon
+      var locator = document.createElement('a');
+      locator.className = 'photosphere-locator';
+      locator.innerHTML = 'Show on a map';
+      locator.href = '#map';
+      // add the event handler
+      locator.addEventListener('click', this.onLocate.bind(this));
+      locator.addEventListener('touchstart', this.onLocate.bind(this));
+      // add the location marker to the image
+      this.config.figure.appendChild(locator);
+    }
+  };
+
+  // EVENTS
+
+  this.onShow = function() {
+    // show the popup
+    this.config.figure.className = this.config.figure.className.replace(/-passive/gi, '-active');
+    // trigger the closed event if available
+    if (this.config.opened) {
+      this.config.opened(this.config.element);
+    }
+  };
+
+  this.onHide = function(evt) {
+    // cancel the click
+    evt.preventDefault();
+    // close the popup
+    this.hide();
+    // trigger the closed event if available
+    if (this.config.closed) {
+      this.config.closed(this.config.element);
+    }
+  };
+
+  this.onLocate = function(evt) {
+    // cancel the click
+    evt.preventDefault();
+    // trigger the located event if available
+    if (this.config.located) {
+      this.config.located(this.config.element);
+    }
+  };
+
+};
+
+// return as a require.js module
+if (typeof module !== 'undefined') {
+  exports = module.exports = useful.Photosphere.Popup;
+}
+
+/*
+	Source:
+	van Creij, Maurice (2016). "useful.Photosphere.js: Projected Photoshere Image", version 20161013, http://www.woollymittens.nl/.
+
+	License:
+	This work is licensed under a Creative Commons Attribution 3.0 Unported License.
+*/
+
+// create the constructor if needed
+var useful = useful || {};
+useful.Photosphere = useful.Photosphere || function() {};
+
+// extend the constructor
+useful.Photosphere.prototype.Stage = function(parent) {
 
     "use strict";
 
-    // properties
+    // PROPERTIES
 
-    this.context = context;
-    this.model = context.model;
+    this.parent = parent;
+    this.config = parent.config;
 
-    // methods
+    // METHODS
 
     this.create = function(photo) {
         this.createScene();
@@ -44547,19 +44833,19 @@ useful.PhotoSphere.prototype.Stage = function(context) {
     };
 
     this.createScene = function() {
-        var width = this.model.figure.offsetWidth,
-            height = this.model.figure.offsetHeight;
+        var width = this.config.figure.offsetWidth,
+            height = this.config.figure.offsetHeight;
         // create the scene
-        this.model.scene = new THREE.Scene();
+        this.config.scene = new THREE.Scene();
         // create the camera
-        this.model.camera = new THREE.PerspectiveCamera(75, width / height, 1, 1000);
-        this.model.camera.position.x = 0.1;
-        this.model.camera.rotation.order = 'YXZ';
+        this.config.camera = new THREE.PerspectiveCamera(75, width / height, 1, 1000);
+        this.config.camera.position.x = 0.1;
+        this.config.camera.rotation.order = 'YXZ';
         // create the renderer
-        this.model.renderer = this.hasWebGL() ? new THREE.WebGLRenderer() : new THREE.CanvasRenderer();
-        this.model.renderer.setSize(width, height);
+        this.config.renderer = this.hasWebGL() ? new THREE.WebGLRenderer() : new THREE.CanvasRenderer();
+        this.config.renderer.setSize(width, height);
         // insert the renderer into the page
-        this.model.figure.appendChild(this.model.renderer.domElement);
+        this.config.figure.appendChild(this.config.renderer.domElement);
     };
 
     this.createSphere = function(texture) {
@@ -44570,18 +44856,18 @@ useful.PhotoSphere.prototype.Stage = function(context) {
             })
         );
         sphere.scale.x = -1;
-        this.model.scene.add(sphere);
+        this.config.scene.add(sphere);
     };
 
-    // events
+    // EVENTS
 
     this.render = function() {
         // if idle import a slight rotation
-        this.model.camera.rotation.y += this.model.idle;
+        this.config.camera.rotation.y += this.config.idle;
         // render the scene
-        this.model.renderer.render(
-            this.model.scene,
-            this.model.camera
+        this.config.renderer.render(
+            this.config.scene,
+            this.config.camera
         );
         // next iteration
         requestAnimationFrame(
@@ -44595,12 +44881,12 @@ useful.PhotoSphere.prototype.Stage = function(context) {
 
 // return as a require.js module
 if (typeof module !== 'undefined') {
-    exports = module.exports = useful.PhotoSphere.Stage;
+    exports = module.exports = useful.Photosphere.Stage;
 }
 
 /*
 	Source:
-	van Creij, Maurice (2016). "useful.photosphere.js: Projected Photoshere Image", version 20161013, http://www.woollymittens.nl/.
+	van Creij, Maurice (2016). "useful.photosphere.js: Overlays a full screen preview of a thumbnail", version 20141127, http://www.woollymittens.nl/.
 
 	License:
 	This work is licensed under a Creative Commons Attribution 3.0 Unported License.
@@ -44608,46 +44894,44 @@ if (typeof module !== 'undefined') {
 
 // create the constructor if needed
 var useful = useful || {};
-useful.PhotoSphere = useful.PhotoSphere || function() {};
+useful.Photosphere = useful.Photosphere || function () {};
 
 // extend the constructor
-useful.PhotoSphere.prototype.init = function(model) {
+useful.Photosphere.prototype.init = function (config) {
 
-    "use strict";
+	// PROPERTIES
 
-    // model
+	"use strict";
 
-    this.model = {
-        'idle': -0.002
-    };
+	// METHODS
 
-    for (name in model) {
-        this.model[name] = model[name];
-    }
+	this.only = function (config) {
+		// start an instance of the script
+		return new this.Main(config, this).init();
+	};
 
-    // views
+	this.each = function (config) {
+		var _config, _context = this, instances = [];
+		// for all element
+		for (var a = 0, b = config.elements.length; a < b; a += 1) {
+			// clone the configuration
+			_config = Object.create(config);
+			// insert the current element
+			_config.element = config.elements[a];
+			// start a new instance of the object
+			instances[a] = new this.Main(_config, _context).init();
+		}
+		// return the instances
+		return instances;
+	};
 
-    this.stage = new this.Stage(this);
-    this.controls = new this.Controls(this);
-    this.loader = new this.Loader(this);
+	// START
 
-    // controller
-
-    this.onComplete = function(photo) {
-        this.stage.create(photo);
-        this.controls.implement();
-    };
-
-    this.loader.load(
-        this.model.figure.getAttribute('data-src'),
-        this.onComplete.bind(this)
-    );
-
-    return this;
+	return (config.elements) ? this.each(config) : this.only(config);
 
 };
 
 // return as a require.js module
 if (typeof module !== 'undefined') {
-    exports = module.exports = useful.PhotoSphere;
+	exports = module.exports = useful.Photosphere;
 }

@@ -1,6 +1,6 @@
 /*
 	Source:
-	van Creij, Maurice (2016). "useful.photosphere.js: Projected Photoshere Image", version 20161013, http://www.woollymittens.nl/.
+	van Creij, Maurice (2016). "useful.Photosphere.js: Projected Photoshere Image", version 20161013, http://www.woollymittens.nl/.
 
 	License:
 	This work is licensed under a Creative Commons Attribution 3.0 Unported License.
@@ -8,19 +8,19 @@
 
 // create the constructor if needed
 var useful = useful || {};
-useful.PhotoSphere = useful.PhotoSphere || function() {};
+useful.Photosphere = useful.Photosphere || function() {};
 
 // extend the constructor
-useful.PhotoSphere.prototype.Stage = function(context) {
+useful.Photosphere.prototype.Stage = function(parent) {
 
     "use strict";
 
-    // properties
+    // PROPERTIES
 
-    this.context = context;
-    this.model = context.model;
+    this.parent = parent;
+    this.config = parent.config;
 
-    // methods
+    // METHODS
 
     this.create = function(photo) {
         this.createScene();
@@ -38,19 +38,19 @@ useful.PhotoSphere.prototype.Stage = function(context) {
     };
 
     this.createScene = function() {
-        var width = this.model.figure.offsetWidth,
-            height = this.model.figure.offsetHeight;
+        var width = this.config.figure.offsetWidth,
+            height = this.config.figure.offsetHeight;
         // create the scene
-        this.model.scene = new THREE.Scene();
+        this.config.scene = new THREE.Scene();
         // create the camera
-        this.model.camera = new THREE.PerspectiveCamera(75, width / height, 1, 1000);
-        this.model.camera.position.x = 0.1;
-        this.model.camera.rotation.order = 'YXZ';
+        this.config.camera = new THREE.PerspectiveCamera(75, width / height, 1, 1000);
+        this.config.camera.position.x = 0.1;
+        this.config.camera.rotation.order = 'YXZ';
         // create the renderer
-        this.model.renderer = this.hasWebGL() ? new THREE.WebGLRenderer() : new THREE.CanvasRenderer();
-        this.model.renderer.setSize(width, height);
+        this.config.renderer = this.hasWebGL() ? new THREE.WebGLRenderer() : new THREE.CanvasRenderer();
+        this.config.renderer.setSize(width, height);
         // insert the renderer into the page
-        this.model.figure.appendChild(this.model.renderer.domElement);
+        this.config.figure.appendChild(this.config.renderer.domElement);
     };
 
     this.createSphere = function(texture) {
@@ -61,18 +61,18 @@ useful.PhotoSphere.prototype.Stage = function(context) {
             })
         );
         sphere.scale.x = -1;
-        this.model.scene.add(sphere);
+        this.config.scene.add(sphere);
     };
 
-    // events
+    // EVENTS
 
     this.render = function() {
         // if idle import a slight rotation
-        this.model.camera.rotation.y += this.model.idle;
+        this.config.camera.rotation.y += this.config.idle;
         // render the scene
-        this.model.renderer.render(
-            this.model.scene,
-            this.model.camera
+        this.config.renderer.render(
+            this.config.scene,
+            this.config.camera
         );
         // next iteration
         requestAnimationFrame(
@@ -86,5 +86,5 @@ useful.PhotoSphere.prototype.Stage = function(context) {
 
 // return as a require.js module
 if (typeof module !== 'undefined') {
-    exports = module.exports = useful.PhotoSphere.Stage;
+    exports = module.exports = useful.Photosphere.Stage;
 }

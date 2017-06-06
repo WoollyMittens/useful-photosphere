@@ -22,12 +22,22 @@ This include can be added to the header or placed inline before the script is in
 
 ```javascript
 var photoSphere = new useful.PhotoSphere().init({
-	'figure' : document.querySelector('.useful-photosphere'),
+	// target elements
+	'elements': document.querySelectorAll('#photosphere a'),
+	// restrict the popup to a container
+	'container' : document.body,
+	// optional webservice for acquiring sized images
+	'slicer' : 'php/imageslice.php?src=../{src}&{size}',
+	// rotation speed when idle
 	'idle': 0.002
 });
 ```
 
-**figure : {DOM node}** - A DOM node to be processed into a spherical display.
+**'elements' : {array}** - A collection of target elements.
+
+**'container' : {element}** - Restrict the popup to a container.
+
+**'slicer' : {string}** - Optional web-service for resizing images. An example is provided as *./php/imageslice.php*.
 
 **idle : {float}** - The steps in radians to rotate when idle.
 
