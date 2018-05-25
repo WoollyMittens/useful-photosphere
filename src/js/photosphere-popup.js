@@ -1,19 +1,5 @@
-/*
-	Source:
-	van Creij, Maurice (2016). "useful.photosphere.js: Projected Photoshere Image", version 20161013, http://www.woollymittens.nl/.
-
-	License:
-	This work is licensed under a Creative Commons Attribution 3.0 Unported License.
-*/
-
-// create the constructor if needed
-var useful = useful || {};
-useful.Photosphere = useful.Photosphere || function() {};
-
-// extend the constructor
-useful.Photosphere.prototype.Popup = function(parent) {
-
-  "use strict";
+// extend the class
+Photosphere.prototype.Popup = function(parent) {
 
   // PROPERTIES
 
@@ -118,8 +104,3 @@ useful.Photosphere.prototype.Popup = function(parent) {
   };
 
 };
-
-// return as a require.js module
-if (typeof module !== 'undefined') {
-  exports = module.exports = useful.Photosphere.Popup;
-}

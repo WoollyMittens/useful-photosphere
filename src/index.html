@@ -28,16 +28,16 @@
 			<aside>
 
 				<!-- Cut below this -->
-				<style>@import url("./css/useful-photosphere.css");</style>
+				<style>@import url("./css/photosphere.css");</style>
+				<script src="./js/photosphere.js"></script>
 				<ul class="photosphere" id="photosphere">
 					<li><a href="./img/075_r0012075.jpg"><img alt="" src="./img/075_r0012075_small.jpg"/></a></li>
 					<li><a href="./img/084_r0012077.jpg"><img alt="" src="./img/084_r0012077_small.jpg"/></a></li>
 					<li><a href="./img/118_r0012096.jpg"><img alt="" src="./img/118_r0012096_small.jpg"/></a></li>
 				</ul>
-				<script src="./js/useful-photosphere.js"></script>
 				<script>
 					// create a new instance of the script
-					var photospheres = new useful.Photosphere().init({
+					var photospheres = new Photosphere({
 						// target elements
 						'elements': document.querySelectorAll('#photosphere a'),
 						// restrict the popup to a container

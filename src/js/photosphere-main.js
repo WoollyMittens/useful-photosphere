@@ -1,19 +1,5 @@
-/*
-	Source:
-	van Creij, Maurice (2016). "useful.photosphere.js: Projected Photoshere Image", version 20161013, http://www.woollymittens.nl/.
-
-	License:
-	This work is licensed under a Creative Commons Attribution 3.0 Unported License.
-*/
-
-// create the constructor if needed
-var useful = useful || {};
-useful.Photosphere = useful.Photosphere || function() {};
-
-// extend the constructor
-useful.Photosphere.prototype.Main = function(config, context) {
-
-  "use strict";
+// extend the class
+Photosphere.prototype.Main = function(config, context) {
 
   // PROPERTIES
 
@@ -25,16 +11,11 @@ useful.Photosphere.prototype.Main = function(config, context) {
     'slicer': '{src}'
   };
 
-  for (name in config) {
-    this.config[name] = config[name];
+  for (key in config) {
+    this.config[key] = config[key];
   }
 
   // METHODS
-
-  this.init = function() {
-    // set the event handler on the target element
-    this.element.addEventListener('click', this.onElementClicked.bind(this));
-  };
 
   this.viewer = function() {
     // create the components
@@ -52,8 +33,6 @@ useful.Photosphere.prototype.Main = function(config, context) {
       'error': this.onViewerError.bind(this)
     });
   };
-
-  // EVENTS
 
   this.onElementClicked = function(evt) {
     // prevent the click
@@ -90,9 +69,8 @@ useful.Photosphere.prototype.Main = function(config, context) {
     if (this.config.located) { this.config.located(this.config.element); }
   };
 
-};
+  // EVENTS
 
-// return as a require.js module
-if (typeof module !== 'undefined') {
-  exports = module.exports.Main = useful.Photosphere.Main;
-}
+  this.element.addEventListener('click', this.onElementClicked.bind(this));
+
+};
