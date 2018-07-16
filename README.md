@@ -1,4 +1,4 @@
-# useful.photoshere.js: Projected Spherical Image
+# photoshere.js: Projected Spherical Image
 
 Displays a rotating projection of a spherical image.
 
