@@ -11,6 +11,7 @@
 			.example-left > article, .example-left > aside { width:48%; padding:1%; float:left; }
 			.example-right > article, .example-right > aside { width:48%; padding:1%; float:right; }
 		</style>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js"></script>
 	</head>
 	<body>
 		<section class="example example-right">
@@ -23,26 +24,27 @@
 
 				<!-- Cut below this -->
 				<style>@import url("./css/photosphere.css");</style>
-				<script src="./lib/three.js"></script>
-				<script src="./lib/CanvasRenderer.js"></script>
-				<script src="./lib/Projector.js"></script>
-				<script src="./js/photosphere.js"></script>
 				<ul class="photosphere" id="photosphere">
 					<li><a href="./img/075_r0012075.jpg"><img alt="" src="./img/075_r0012075_small.jpg"/></a></li>
 					<li><a href="./img/084_r0012077.jpg"><img alt="" src="./img/084_r0012077_small.jpg"/></a></li>
 					<li><a href="./img/118_r0012096.jpg"><img alt="" src="./img/118_r0012096_small.jpg"/></a></li>
 				</ul>
 				<script>
-					// create a new instance of the script
-					var photospheres = new Photosphere({
-						// target elements
-						'elements': document.querySelectorAll('#photosphere a'),
-						// restrict the popup to a container
-						'container' : document.body,
-						// optional webservice for acquiring sized images
-						'slicer' : 'php/imageslice.php?src=../{src}&{size}',
-						// rotation speed when idle
-						'idle': 0.002
+					requirejs(["./lib/three.js"], function(Three) {
+						window.THREE = Three;
+						requirejs(["js/photosphere.js", "./lib/CanvasRenderer.js", "./lib/Projector.js"], function(Photosphere) {
+							// create a new instance of the script
+							var photospheres = new Photosphere({
+								// target elements
+								'elements': document.querySelectorAll('#photosphere a'),
+								// restrict the popup to a container
+								'container' : document.body,
+								// optional webservice for acquiring sized images
+								'slicer' : 'php/imageslice.php?src=../{src}&{size}',
+								// rotation speed when idle
+								'idle': 0.002
+							});
+						});
 					});
 				</script>
 				<!-- Cut above this -->

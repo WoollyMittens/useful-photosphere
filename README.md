@@ -18,10 +18,21 @@ This include can be added to the header or placed inline before the script is in
 <script src="./js/photosphere.js"></script>
 ```
 
+Or use [Require.js](https://requirejs.org/).
+
+```js
+requirejs(["./lib/three.js"], function(Three) {
+	window.THREE = Three;
+	requirejs(["js/photosphere.js", "./lib/CanvasRenderer.js", "./lib/Projector.js"], function(Photosphere) {
+		...
+	});
+});
+```
+
 ## How to start the script
 
 ```javascript
-var photoSphere = new PhotoSphere({
+new PhotoSphere({
 	// target elements
 	'elements': document.querySelectorAll('#photosphere a'),
 	// restrict the popup to a container

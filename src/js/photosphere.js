@@ -34,5 +34,5 @@ var Photosphere = function (config) {
 };
 
 // return as a require.js module
-if (typeof define != 'undefined') define(['photosphere'], function () { return Photosphere });
+if (typeof define != 'undefined') define([], function () { return Photosphere });
 if (typeof module != 'undefined') module.exports = Photosphere;
