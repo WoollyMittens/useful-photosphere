@@ -29,6 +29,8 @@ requirejs(["./lib/three.js"], function(Three) {
 });
 ```
 
+Note that the three.js library has to be imported in two stages to avoid order of execution concflicts.
+
 ## How to start the script
 
 ```javascript
