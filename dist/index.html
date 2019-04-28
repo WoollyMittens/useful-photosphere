@@ -28,9 +28,9 @@
 				<script src="./lib/Projector.js"></script>
 				<script src="./js/photosphere.js"></script>
 				<ul class="photosphere" id="photosphere">
-					<li><a href="./img/075_r0012075.jpg"><img alt="" src="./img/075_r0012075_small.jpg"/></a></li>
-					<li><a href="./img/084_r0012077.jpg"><img alt="" src="./img/084_r0012077_small.jpg"/></a></li>
-					<li><a href="./img/118_r0012096.jpg"><img alt="" src="./img/118_r0012096_small.jpg"/></a></li>
+					<li><a href="img/075_r0012075.jpg"><img alt="" src="./img/075_r0012075_small.jpg"/></a></li>
+					<li><a href="img/084_r0012077.jpg"><img alt="" src="./img/084_r0012077_small.jpg"/></a></li>
+					<li><a href="img/118_r0012096.jpg"><img alt="" src="./img/118_r0012096_small.jpg"/></a></li>
 				</ul>
 				<script>
 					// create a new instance of the script
@@ -40,7 +40,7 @@
 						// restrict the popup to a container
 						'container' : document.body,
 						// optional webservice for acquiring sized images
-						'slicer' : 'php/imageslice.php?src=../{src}&{size}',
+						'slicer' : './php/imageslice.php?src=../{src}&{size}',
 						// rotation speed when idle
 						'idle': 0.002
 					});

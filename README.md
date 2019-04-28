@@ -9,27 +9,45 @@ Try the <a href="http://www.woollymittens.nl/default.php?url=useful-photosphere"
 The stylesheet is best included in the header of the document.
 
 ```html
-<link rel="stylesheet" href="./css/photosphere.css"/>
+<link rel="stylesheet" href="css/photosphere.css"/>
 ```
 
 This include can be added to the header or placed inline before the script is invoked.
 
 ```html
-<script src="./js/photosphere.js"></script>
+<script src="lib/three.js"></script>
+<script src="lib/CanvasRenderer.js"></script>
+<script src="lib/Projector.js"></script>
+<script src="js/photosphere.js"></script>
 ```
 
 Or use [Require.js](https://requirejs.org/).
 
 ```js
-requirejs(["./lib/three.js"], function(Three) {
+requirejs([
+	"lib/three.js"
+], function(Three) {
 	window.THREE = Three;
-	requirejs(["js/photosphere.js", "./lib/CanvasRenderer.js", "./lib/Projector.js"], function(Photosphere) {
+	requirejs([
+		"js/photosphere.js",
+		"lib/CanvasRenderer.js",
+		"lib/Projector.js"
+	], function(Photosphere) {
 		...
 	});
 });
 ```
 
 Note that the three.js library has to be imported in two stages to avoid order of execution concflicts.
+
+Or import into an MVC framework.
+
+```js
+var Three = require('lib/three.js');
+var CanvasRenderer = require('lib/CanvasRenderer.js');
+var Projector = require('lib/Projector.js');
+var ImageFallback = require('js/photosphere.js');
+```
 
 ## How to start the script
 
