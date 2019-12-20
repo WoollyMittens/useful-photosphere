@@ -58,7 +58,7 @@ new PhotoSphere({
 	// restrict the popup to a container
 	'container' : document.body,
 	// optional webservice for acquiring sized images
-	'slicer' : 'php/imageslice.php?src=../{src}&{size}',
+	'slicer' : 'php/imageslice.php?src={src}&{size}',
 	// rotation speed when idle
 	'idle': 0.002
 });
