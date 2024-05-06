@@ -1,5 +1,7 @@
 # photoshere.js: Projected Spherical Image
 
+*DEPRICATION WARNING: the functionality in this script has been superceeded / trivialised by updated web standards.*
+
 Displays a rotating projection of a spherical image.
 
 ## How to include the script
@@ -38,13 +40,13 @@ requirejs([
 
 Note that the three.js library has to be imported in two stages to avoid order of execution concflicts.
 
-Or import into an MVC framework.
+Or use imported as a component in existing projects.
 
 ```js
-var Three = require('lib/three.js');
-var CanvasRenderer = require('lib/CanvasRenderer.js');
-var Projector = require('lib/Projector.js');
-var ImageFallback = require('js/photosphere.js');
+@import {Three = require('lib/three.js";
+@import {CanvasRenderer = require('lib/CanvasRenderer.js";
+@import {Projector = require('lib/Projector.js";
+@import {ImageFallback} from "js/photosphere.js";
 ```
 
 ## How to start the script
@@ -89,4 +91,4 @@ The following commands are available for development:
 
 ## License
 
-This work is licensed under a [MIT License](https://opensource.org/licenses/MIT). The latest version of this and other scripts by the same author can be found on [Github](https://github.com/WoollyMittens) and at [WoollyMittens.nl](https://www.woollymittens.nl/).
+This work is licensed under a [MIT License](https://opensource.org/licenses/MIT). The latest version of this and other scripts by the same author can be found on [Github](https://github.com/WoollyMittens).
